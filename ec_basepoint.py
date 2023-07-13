@@ -63,59 +63,60 @@ class EllipticCurve:
         return pow(x, p - 2, p)
 
 
-p = 26959946667150639794667015087019630673557916260026308143510066298881
-a = -3
-b = 18958286285566608000408668544493926415504680968679321075787234672564
+p = (0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F)
+a = 0
+b = 7
 
-P224 = EllipticCurve(p, a, b)
+SECPK1_256 = EllipticCurve(p, a, b)
 
 Gx = 19277929113566293071110308034699488026831934219452440156649784352033
 Gy = 19926808758034470970197974370888749184205991990603949537637343198772
 G = (Gx, Gy)
 
 print("Check that generator point is on curve: %s" %
-      P224.is_point_on_curve(Gx, Gy))
+      SECPK1_256.is_point_on_curve(Gx, Gy))
 
-Q = P224.multiple(1, G)
+Q = SECPK1_256.multiple(1, G)
 print("Check generator point times 1 is equal to itself: %s" % (Q == G))
 
 
-# Number of points in P256 sub-group
+# Number of points in SECPK1_256 sub-group
 n = 26959946667150639794667015087019625940457807714424391721682722368061
 
-Q = P224.multiple(n - 1, G)
+Q = SECPK1_256.multiple(n - 1, G)
 
 print("Multiply the generator point by 1 minus the size of the sub-group (last point in group) result: \n\n\tX:%i\n\tY:%i\n" % Q)
 
 
 print("Check to make sure the last point in the group is on the curve: %s" %
-      (P224.is_point_on_curve(Q[0], Q[1])))
+      (SECPK1_256.is_point_on_curve(Q[0], Q[1])))
 
-Q = P224.multiple(n, G)
+Q = SECPK1_256.multiple(n, G)
 print("Check that the group loops back around to the first element of the group (point at infinity): %s" % (Q == INF_POINT))
 
 
-Z = P224.multiple(n+1, G)
+Z = SECPK1_256.multiple(n+1, G)
 print("Check that the group loops back around to the second element of the group (generator point): %s" % (Z == G))
 
 
-alice_private_key = random.randint(0, 2**223)
-print("\nGenerate random P224 private key for Alice:\n\n\t%s\n" %
+alice_private_key = random.randint(0, 2**256)
+print("\nGenerate random SECPK1_256 private key for Alice:\n\n\t%s\n" %
       alice_private_key)
 
-alice_public_key = P224.multiple(alice_private_key, G)
+alice_public_key = SECPK1_256.multiple(alice_private_key, G)
 print("Generate the associated public key for Alice's private key: \n\n\tX:%i\n\tY:%i\n" %
       alice_public_key)
 
-bob_private_key = random.randint(0, 2**223)
-print("\nGenerate random P224 private key for Bob:\n\n\t%s\n" % bob_private_key)
+bob_private_key = random.randint(0, 2**256)
+print("\nGenerate random SECPK1_256 private key for Bob:\n\n\t%s\n" %
+      bob_private_key)
 
-bob_public_key = P224.multiple(bob_private_key, G)
+bob_public_key = SECPK1_256.multiple(bob_private_key, G)
 print("Generate the associated public key for Bob's private key: \n\n\tX:%i\n\tY:%i\n" % bob_public_key)
 
 
-alice_ecdh = P224.multiple(alice_private_key, bob_public_key)
-bob_ecdh = P224.multiple(bob_private_key, alice_public_key)
+alice_ecdh = SECPK1_256.multiple(alice_private_key, bob_public_key)
+bob_ecdh = SECPK1_256.multiple(bob_private_key, alice_public_key)
 
 print("Generated ECDH shared secret: \n\n\tX:%i\n\tY:%i\n" % alice_ecdh)
 
@@ -126,7 +127,7 @@ print("Check both Alice and Bob generate the same shared secret: %s" %
 
 combined_private_key = alice_private_key * bob_private_key
 
-combined_key_public_key = P224.multiple(combined_private_key, G)
+combined_key_public_key = SECPK1_256.multiple(combined_private_key, G)
 
 print("Check combining private keys is equivalent to ECDH: %s" %
       (alice_ecdh == combined_key_public_key))
