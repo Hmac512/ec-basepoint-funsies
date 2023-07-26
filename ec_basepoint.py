@@ -63,14 +63,14 @@ class EllipticCurve:
         return pow(x, p - 2, p)
 
 
-p = (0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F)
+p = 2**256 - 2**32 - 977
 a = 0
 b = 7
 
 SECPK1_256 = EllipticCurve(p, a, b)
 
-Gx = 19277929113566293071110308034699488026831934219452440156649784352033
-Gy = 19926808758034470970197974370888749184205991990603949537637343198772
+Gx = 55066263022277343669578718895168534326250603453777594175500187360389116729240
+Gy = 32670510020758816978083085130507043184471273380659243275938904335757337482424
 G = (Gx, Gy)
 
 print("Check that generator point is on curve: %s" %
@@ -81,7 +81,7 @@ print("Check generator point times 1 is equal to itself: %s" % (Q == G))
 
 
 # Number of points in SECPK1_256 sub-group
-n = 26959946667150639794667015087019625940457807714424391721682722368061
+n = 115792089237316195423570985008687907852837564279074904382605163141518161494337
 
 Q = SECPK1_256.multiple(n - 1, G)
 
@@ -131,3 +131,10 @@ combined_key_public_key = SECPK1_256.multiple(combined_private_key, G)
 
 print("Check combining private keys is equivalent to ECDH: %s" %
       (alice_ecdh == combined_key_public_key))
+
+
+print("\n\n\n")
+
+# Do an ecdh from alice to herself.
+alice_ecdh_self = SECPK1_256.multiple(alice_private_key, alice_public_key)
+print("Generate the ECDH from Alice to herself: \n\n\tX:%i\n\tY:%i\n" % alice_ecdh_self)
