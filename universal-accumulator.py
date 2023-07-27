@@ -89,7 +89,7 @@ def test1(sk):
 
     accumulator2 = Accumulator(sk)
     accumulator2.batch_add_elements(['1'])
-
+    assert(accumulator1.value==accumulator2.value)
 
 def test2(sk):
     elements = ['1', '2', '4', '5', '6']
