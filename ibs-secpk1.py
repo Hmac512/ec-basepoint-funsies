@@ -97,7 +97,7 @@ class IdentityManager:
 if __name__ == "__main__":
     sk = random_scalar()
     ibs = IdentityManager(sk)
-    id_key = ibs.generate_child_key("child-1|validUntil=<timestamp>")
+    id_key = ibs.generate_child_key("child-1|max-eth=1|expires-at=11231312")
     (Ga1, b1, Gr1) = id_key.sign("test-msg")
     (Ga2, b2, Gr2) = id_key.sign("test-msg21321")
     assert (id_key.verify("test-msg", Ga1, b1, Gr1) == True)
