@@ -109,7 +109,6 @@ class IdentityManager:
         Gr = self.curve.multiply(self.curve.G1, r)
         Gr_and_id = hash_id(Gr, id)
         usk = r + ((self.secret_key * Gr_and_id) % self.curve.curve_order)
-        usk = usk & self.curve.curve_order
         return IdentityKey(usk, self.public_key_g1, id, Gr)
 
 
