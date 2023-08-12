@@ -99,7 +99,10 @@ if __name__ == "__main__":
     ibs = IdentityManager(sk)
     id_key = ibs.generate_child_key("child-1|validUntil=<timestamp>")
     (Ga1, b1, Gr1) = id_key.sign("test-msg")
+    (Ga2, b2, Gr2) = id_key.sign("test-msg21321")
     assert (id_key.verify("test-msg", Ga1, b1, Gr1) == True)
+    assert (id_key.verify("test-msg21321", Ga2, b2, Gr2) == True)
     assert (id_key.verify("test-msg2", Ga1, b1, Gr1) == False)
     assert (id_key.verify("test-msg3", Ga1, b1, Gr1) == False)
+
     print("All tests passed!")
