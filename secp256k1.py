@@ -36,6 +36,19 @@ Gy = 326705100207588169780830851305070431844712733806592432759389043357573374824
 G = cast("PlainPoint2D", (Gx, Gy))
 
 
+def is_inf(pt: "PlainPoint2D") -> bool:
+    return pt is None
+
+# Check that a point is on the curve defined by y**2 == x**3 + b
+
+
+def is_on_curve(pt: "PlainPoint2D") -> bool:
+    if is_inf(pt):
+        return True
+    x, y = pt
+    return (y**2 - x**3) % P == B
+
+
 def neg(pt: "PlainPoint2D") -> "PlainPoint2D":
     if pt is None:
         return None
