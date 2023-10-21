@@ -1,3 +1,4 @@
+import random
 import kzg
 from polynomial import evaluate_polynomial
 import time
@@ -21,10 +22,14 @@ if __name__ == '__main__':
     print("Generated KZG commitment (took %.2f)" % t)
 
     # choose some point on P(x) to prove
-    point = (1, evaluate_polynomial(encoded_polynomial, 1))
+    reveal_index = random.randrange(len(points))
 
-    assert points[1][0] == point[0], "xs should be equal"
-    assert points[1][1] == point[1], "ys should be equal"
+    x_to_reveal, _ = points[reveal_index]
+
+    point = (x_to_reveal, evaluate_polynomial(encoded_polynomial, x_to_reveal))
+
+    assert points[reveal_index][0] == point[0], "xs should be equal"
+    assert points[reveal_index][1] == point[1], "ys should be equal"
 
     # generate kzg proof that point is on polynomial
     start_time = time.time()
