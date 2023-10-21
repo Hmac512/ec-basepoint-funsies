@@ -105,7 +105,7 @@ def verify(commitment: Point2D[Field], proof: Point2D[Field], point: tuple[int, 
 # Generate KZG proof of append only
 # We are taking advantage of the additively homomorphic property
 # of polynomial commitments
-def commit_diff(polynomial1: list[int], polynomial2: list[int], setup_g1: list[Point2D[Field]]) -> Point2D[Field]:
+def commit_diff(polynomial1: list[int], polynomial2: list[int], setup_g1: list[Point2D[Field]]) -> tuple[Point2D[Field], list[tuple]]:
     assert len(polynomial1)-1 <= len(setup_g1), "polynomial1 is not right size"
     assert len(polynomial2)-1 <= len(setup_g1), "polynomial2 is not right size"
 

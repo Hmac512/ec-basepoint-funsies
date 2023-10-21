@@ -128,6 +128,6 @@ def test_kzg_append_only():
 
 
 if __name__ == '__main__':
-    test_basic_kzg()
-    print("\n"*3)
     test_kzg_append_only()
+    print("\n"*3)
+    test_basic_kzg()
