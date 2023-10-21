@@ -113,6 +113,7 @@ def test_kzg_append_only():
         encoded_polynomial, appended_polynomial, setup_g1_points)
 
     assert (kzg.verify_append_only(C1, C2, pi, setup_g2_point))
+    print("Append only test passed!")
 
 
 if __name__ == '__main__':
