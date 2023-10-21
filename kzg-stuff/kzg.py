@@ -100,3 +100,31 @@ def verify(commitment: Point2D[Field], proof: Point2D[Field], point: tuple[int, 
     )
     expected = pairing.pairing(curve.G2, c_minus_y)
     return result == expected
+
+
+# Generate KZG proof of append only
+def prove_append_only(polynomial1: list[int], polynomial2: list[int], setup_g1: list[Point2D[Field]]) -> Point2D[Field]:
+    assert len(polynomial1)-1 <= len(setup_g1), "polynomial1 is not right size"
+    assert len(polynomial2)-1 <= len(setup_g1), "polynomial2 is not right size"
+
+    polynomial_diff = []
+    for p1, p2 in zip(polynomial1, polynomial2):
+        polynomial_diff.append(p2-p1)
+
+    # make sure we have one term only
+    assert (polynomial_diff[:-1] == [0]*15)
+
+    # Our proof should be just evaluating the difference polynomial at the secret value
+
+    sG_term = setup_g1[-1]
+    coeff = polynomial_diff[-1]
+    pi = curve.multiply(sG_term, coeff)
+    return pi
+
+
+# Verify append only
+def verify_append_only(commitment1: Point2D[Field], commitment2: Point2D[Field], proof: Point2D[Field]) -> bool:
+    # add c2 and -c1
+    diff_commitment = curve.add(commitment2, curve.neg(commitment1))
+    # should be e
+    return diff_commitment == proof

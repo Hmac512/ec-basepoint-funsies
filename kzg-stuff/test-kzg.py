@@ -2,8 +2,10 @@ import random
 import kzg
 from polynomial import evaluate_polynomial
 import time
-if __name__ == '__main__':
-    print("Testing kzg")
+
+
+def test_basic_kzg():
+    print("Testing basic KZG stuff")
     start_time = time.time()
     st = start_time
     # run trusted setup and store public setup points
@@ -73,3 +75,47 @@ if __name__ == '__main__':
     print("Unable to verify KZG proof of evaluation (took %.2fs)" % t)
     print("Success! everything took %.2fs" % (time.time() - st))
     print("\n")
+
+
+def test_kzg_append_only():
+    print("Testing append only KZG proof")
+    # run trusted setup and store public setup points
+    setup_g1_points, setup_g2_point = kzg.trusted_setup()
+
+    # encode data as polynomial P(x)
+    # We will make a polynomial with the last coeff being 0
+    # simulating a empty slot
+    encoded_polynomial = []
+    for i in range(15):
+        encoded_polynomial.append(kzg.random_scalar())
+    encoded_polynomial.append(0)
+
+    points = []
+    for i in range(16):
+        points.append(evaluate_polynomial(encoded_polynomial, i))
+
+    # create kzg commitment of P(x)
+    C1 = kzg.commit(encoded_polynomial, setup_g1_points)
+
+    # now lets set the last coeff simulating appending data
+
+    appended_polynomial = encoded_polynomial[:]
+    appended_polynomial[-1] = kzg.random_scalar()
+
+    changed_points = []
+    for i in range(16):
+        changed_points.append(evaluate_polynomial(appended_polynomial, i))
+
+    # create kzg commitment of P'(x)
+    C2 = kzg.commit(appended_polynomial, setup_g1_points)
+
+    pi = kzg.prove_append_only(
+        encoded_polynomial, appended_polynomial, setup_g1_points)
+
+    assert (kzg.verify_append_only(C1, C2, pi, setup_g2_point))
+
+
+if __name__ == '__main__':
+    # test_basic_kzg()
+    print("\n"*3)
+    test_kzg_append_only()
