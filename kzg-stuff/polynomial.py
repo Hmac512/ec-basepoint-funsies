@@ -17,10 +17,12 @@ def gcd(a: int, b: int) -> int:
     return a
 
 
-# There is a faster library with a long startup time (requires pre-computing lookup tables) of the same surface
+# # There is a faster library with a long startup time (requires pre-computing lookup tables)
 #
-# pip3 install galois
+# # pip3 install galois
 # from galois import GF, lagrange_poly
+# print("...please wait a minute to compute lookup tables for GF(n)...")
+# default_f=GF(n,1,verify=False)
 def lagrange_polynomial(points: list[tuple[int, int]], prime=curve.curve_order) -> list[int]:
     return interpolate_polynomial([i[0] for i in points], [k[1] for k in points], prime)
 
