@@ -112,7 +112,9 @@ def test_kzg_append_only():
     pi = kzg.prove_append_only(
         encoded_polynomial, appended_polynomial, setup_g1_points)
 
-    assert (kzg.verify_append_only(C1, C2, pi, setup_g2_point))
+    # You'd typically want to include 1 or more evaluation proofs with this,
+    # but this is a very simple example of append only proofs
+    assert (kzg.verify_append_only(C1, C2, pi))
     print("Append only test passed!")
 
 
