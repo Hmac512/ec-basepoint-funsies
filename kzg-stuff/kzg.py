@@ -105,7 +105,7 @@ def verify(commitment: Point2D[Field], proof: Point2D[Field], point: tuple[int, 
 # Generate KZG proof of append only
 # We are taking advantage of the additively homomorphic property
 # of polynomial commitments
-def prove_append_only(polynomial1: list[int], polynomial2: list[int], setup_g1: list[Point2D[Field]]) -> Point2D[Field]:
+def commit_diff(polynomial1: list[int], polynomial2: list[int], setup_g1: list[Point2D[Field]]) -> Point2D[Field]:
     assert len(polynomial1)-1 <= len(setup_g1), "polynomial1 is not right size"
     assert len(polynomial2)-1 <= len(setup_g1), "polynomial2 is not right size"
 
@@ -121,12 +121,15 @@ def prove_append_only(polynomial1: list[int], polynomial2: list[int], setup_g1: 
     sG_term = setup_g1[-1]
     coeff = polynomial_diff[-1]
     pi = curve.multiply(sG_term, coeff)
-    return pi
+    return pi, polynomial_diff
 
 
 # Verify append only
-def verify_append_only(commitment1: Point2D[Field], commitment2: Point2D[Field], proof: Point2D[Field]) -> bool:
+def verify_append_only(commitment1: Point2D[Field], commitment2: Point2D[Field], diff_commit: Point2D[Field], diff_pi: Point2D[Field], point: tuple[int, int], setup_g2: Point2D[Field]) -> bool:
     # add c2 and -c1
-    diff_commitment = curve.add(commitment2, curve.neg(commitment1))
-    # should be e
-    return diff_commitment == proof
+    expected = curve.add(commitment2, curve.neg(commitment1))
+    # should be equal
+    if expected != diff_commit:
+        return False
+    # Verify normal eval proof
+    return verify(diff_commit, diff_pi, point, setup_g2)

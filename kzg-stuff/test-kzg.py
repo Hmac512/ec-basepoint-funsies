@@ -109,16 +109,25 @@ def test_kzg_append_only():
     # create kzg commitment of P'(x)
     C2 = kzg.commit(appended_polynomial, setup_g1_points)
 
-    pi = kzg.prove_append_only(
+    diff_commit, diff_polynomial = kzg.commit_diff(
         encoded_polynomial, appended_polynomial, setup_g1_points)
+
+    diff_points = []
+    for i in range(16):
+        diff_points.append((i, evaluate_polynomial(diff_polynomial, i)))
+
+    # choose some point on the diff polynomial
+    reveal_point = random.choice(diff_points)
+    diff_pi = kzg.proof(diff_polynomial, reveal_point, setup_g1_points)
 
     # You'd typically want to include 1 or more evaluation proofs with this,
     # but this is a very simple example of append only proofs
-    assert (kzg.verify_append_only(C1, C2, pi))
+    assert (kzg.verify_append_only(
+        C1, C2, diff_commit, diff_pi, reveal_point, setup_g2_point))
     print("Append only test passed!")
 
 
 if __name__ == '__main__':
-    test_basic_kzg()
+    # test_basic_kzg()
     print("\n"*3)
     test_kzg_append_only()
