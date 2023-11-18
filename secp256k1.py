@@ -24,7 +24,7 @@ else:
             return value
         else:
             return ord(value)
-
+from eth_hash.auto import keccak
 
 # Elliptic curve parameters (secp256k1)
 P = 2**256 - 2**32 - 977
@@ -193,3 +193,11 @@ def ecdsa_raw_recover(msghash: bytes, vrs: Tuple[int, int, int]) -> "PlainPoint2
     Q_jacobian = from_jacobian(Q)
 
     return Q_jacobian
+
+
+def pub_to_address(pubKey: "PlainPoint2D") -> str:
+    x, y = pubKey
+    concat_x_y = x.to_bytes(32, byteorder='big') + \
+        y.to_bytes(32, byteorder='big')
+
+    return '0x' + keccak.hasher(concat_x_y)[-20:].hex()
